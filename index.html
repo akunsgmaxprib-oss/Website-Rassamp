@@ -118,3 +118,249 @@
   </footer>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rassamp Store</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      overflow-x: hidden;
+    }
+    /* Background pelangi animasi */
+    body {
+      background: linear-gradient(270deg, #ff0080, #ff8c00, #40e0d0, #8a2be2, #ff0000);
+      background-size: 1000% 1000%;
+      animation: rainbow 15s ease infinite;
+    }
+    @keyframes rainbow {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    header {
+      text-align: center;
+      padding: 30px;
+      font-size: 28px;
+      font-weight: bold;
+      text-shadow: 0px 0px 15px black;
+    }
+
+    /* Intro */
+    #intro {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      z-index: 9999;
+      animation: fadeOut 3s ease forwards;
+      animation-delay: 3s;
+    }
+    #intro h1 {
+      font-size: 40px;
+      background: linear-gradient(to right, #ff0080, #40e0d0, #ff8c00);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 1.5s infinite alternate;
+    }
+    @keyframes glow {
+      from {text-shadow: 0 0 10px #fff;}
+      to {text-shadow: 0 0 30px #ff0080;}
+    }
+    @keyframes fadeOut {
+      to {opacity: 0; visibility: hidden;}
+    }
+
+    .product-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+    .product {
+      background: rgba(0,0,0,0.6);
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .product:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px white;
+    }
+    .product h3 {
+      margin: 10px 0;
+    }
+    .btn-beli {
+      background: linear-gradient(45deg, #ff0080, #ff8c00);
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      font-weight: bold;
+      border-radius: 25px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .btn-beli:hover {
+      transform: scale(1.1);
+      background: linear-gradient(45deg, #40e0d0, #8a2be2);
+    }
+
+    /* Login admin */
+    #adminLoginBtn {
+      position: absolute;
+      top: 10px; right: 10px;
+      padding: 8px 15px;
+      background: black;
+      border: 2px solid white;
+      border-radius: 8px;
+      cursor: pointer;
+      color: white;
+    }
+    #adminPanel {
+      display: none;
+      background: rgba(0,0,0,0.8);
+      padding: 15px;
+      border-radius: 15px;
+      margin: 20px;
+    }
+    #adminPanel input, #adminPanel select {
+      margin: 5px 0;
+      padding: 5px;
+      border-radius: 5px;
+      border: none;
+    }
+    .edit-btn, .delete-btn {
+      margin: 5px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: white;
+    }
+    .edit-btn {background: #007bff;}
+    .delete-btn {background: #dc3545;}
+  </style>
+</head>
+<body>
+  <!-- Intro -->
+  <div id="intro">
+    <h1>✨ Rassamp Story Open ✨</h1>
+  </div>
+
+  <!-- Header -->
+  <header>
+    Rassamp Hosting & Jasa
+    <button id="adminLoginBtn">Login Admin</button>
+  </header>
+
+  <!-- Produk -->
+  <div class="product-container" id="productList">
+    <div class="product">
+      <h3>Hosting Paket SD</h3>
+      <p>CPU: 80%<br>RAM: 5GB<br>Slot: 25<br>Linux/Windows<br>Harga: 5k</p>
+      <button class="btn-beli" onclick="beliProduk('Hosting Paket SD')">💸 Beli</button>
+    </div>
+    <div class="product">
+      <h3>Hosting Paket SMP</h3>
+      <p>CPU: 120%<br>RAM: 10GB<br>Slot: 50<br>Wine/Linux<br>Harga: 10k</p>
+      <button class="btn-beli" onclick="beliProduk('Hosting Paket SMP')">💸 Beli</button>
+    </div>
+    <div class="product">
+      <h3>Jasa Rename Server</h3>
+      <p>Harga: 2k</p>
+      <button class="btn-beli" onclick="beliProduk('Jasa Rename Server')">💸 Beli</button>
+    </div>
+    <div class="product">
+      <h3>Jasa On Server + GM</h3>
+      <p>Harga: 5k</p>
+      <button class="btn-beli" onclick="beliProduk('Jasa On Server + GM')">💸 Beli</button>
+    </div>
+    <div class="product">
+      <h3>Jasa Pasang Mapping</h3>
+      <p>Harga: 2k</p>
+      <button class="btn-beli" onclick="beliProduk('Jasa Pasang Mapping')">💸 Beli</button>
+    </div>
+  </div>
+
+  <!-- Panel Admin -->
+  <div id="adminPanel">
+    <h2>⚙️ Panel Admin</h2>
+    <input type="text" id="newProductName" placeholder="Nama Produk"><br>
+    <input type="text" id="newProductDesc" placeholder="Deskripsi/Harga"><br>
+    <button onclick="addProduct()">Tambah Produk</button><br><br>
+
+    <label>🎵 Ganti Lagu: </label>
+    <input type="text" id="songUrl" placeholder="URL lagu...">
+    <button onclick="changeSong()">Ganti</button><br><br>
+
+    <label>🌈 Atur Warna Background:</label>
+    <input type="color" id="bgColorPicker" onchange="changeBackgroundColor(this.value)">
+  </div>
+
+  <!-- Lagu background -->
+  <audio id="bgMusic" autoplay loop>
+    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+  </audio>
+
+  <script>
+    function beliProduk(nama) {
+      alert("Kamu akan membeli: " + nama);
+      window.open("https://wa.me/6285797123671?text=Halo%20saya%20ingin%20beli%20" + encodeURIComponent(nama));
+    }
+
+    // Login Admin
+    document.getElementById("adminLoginBtn").addEventListener("click", function() {
+      let pw = prompt("Masukkan password admin:");
+      if (pw === "2011") {
+        alert("Login berhasil!");
+        document.getElementById("adminPanel").style.display = "block";
+      } else {
+        alert("Password salah!");
+      }
+    });
+
+    // Tambah produk
+    function addProduct() {
+      let name = document.getElementById("newProductName").value;
+      let desc = document.getElementById("newProductDesc").value;
+      if (!name || !desc) { alert("Isi data produk!"); return; }
+
+      let productList = document.getElementById("productList");
+      let div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `
+        <h3>${name}</h3>
+        <p>${desc}</p>
+        <button class="btn-beli" onclick="beliProduk('${name}')">💸 Beli</button>
+      `;
+      productList.appendChild(div);
+      alert("Produk ditambahkan!");
+    }
+
+    // Ganti lagu
+    function changeSong() {
+      let url = document.getElementById("songUrl").value;
+      if (url) {
+        document.getElementById("bgMusic").src = url;
+        document.getElementById("bgMusic").play();
+        alert("Lagu diganti!");
+      }
+    }
+
+    // Ganti background
+    function changeBackgroundColor(color) {
+      document.body.style.background = color;
+    }
+  </script>
+</body>
+</html>
