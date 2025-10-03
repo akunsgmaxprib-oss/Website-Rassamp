@@ -374,3 +374,53 @@
     width: fit-content;
   }
 </style>
+<div class="box hidden">Produk 1</div>
+<div class="box hidden">Produk 2</div>
+<div class="box hidden">Produk 3</div>
+<div class="box hidden">Produk 4</div>
+
+<script>
+  // Fungsi untuk cek posisi elemen saat scroll
+  function revealOnScroll() {
+    const reveals = document.querySelectorAll(".hidden");
+    for (let i = 0; i < reveals.length; i++) {
+      let windowHeight = window.innerHeight;
+      let elementTop = reveals[i].getBoundingClientRect().top;
+      let elementVisible = 100;
+
+      if (elementTop < windowHeight - elementVisible) {
+        reveals[i].classList.add("active");
+      } else {
+        reveals[i].classList.remove("active");
+      }
+    }
+  }
+
+  window.addEventListener("scroll", revealOnScroll);
+  // Jalankan sekali biar elemen yang sudah kelihatan langsung aktif
+  revealOnScroll();
+</script>
+
+<style>
+  body {
+    background: #111;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+  .box {
+    margin: 50px auto;
+    padding: 30px;
+    width: 80%;
+    background: #222;
+    text-align: center;
+    font-size: 24px;
+    border-radius: 10px;
+    opacity: 0;
+    transform: translateY(100px);
+    transition: all 0.8s ease-out;
+  }
+  .box.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
