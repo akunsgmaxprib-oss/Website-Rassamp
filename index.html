@@ -3,126 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jual Hosting Game</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(135deg, #2c3e50, #3498db);
-      color: #fff;
-    }
-    header {
-      background: #1a252f;
-      padding: 20px;
-      text-align: center;
-      font-size: 26px;
-      font-weight: bold;
-      letter-spacing: 1px;
-    }
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
-      padding: 20px;
-    }
-    .card {
-      background: #34495e;
-      border-radius: 15px;
-      padding: 20px;
-      box-shadow: 0 8px 15px rgba(0,0,0,0.3);
-      transition: transform 0.3s, background 0.3s;
-    }
-    .card:hover {
-      transform: translateY(-10px);
-      background: #3d566e;
-    }
-    .card h2 {
-      margin-top: 0;
-    }
-    .card ul {
-      list-style: none;
-      padding: 0;
-    }
-    .card ul li {
-      margin: 6px 0;
-      padding: 6px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 8px;
-    }
-    .price {
-      font-size: 22px;
-      margin: 10px 0;
-      color: #f1c40f;
-      font-weight: bold;
-    }
-    .btn {
-      display: inline-block;
-      padding: 12px 20px;
-      background: #e67e22;
-      border: none;
-      border-radius: 10px;
-      color: #fff;
-      text-decoration: none;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    .btn:hover {
-      background: #d35400;
-    }
-    footer {
-      text-align: center;
-      padding: 15px;
-      background: #1a252f;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    🌐 Jual Hosting Game & Jasa only samp 🌐
-  </header>
-
-  <div class="container">
-    <!-- Paket 1 -->
-    <div class="card">
-      <h2>Hosting SAMP Paket SD</h2>
-      <ul>
-        <li>CPU: 80%</li>
-        <li>RAM: 5 GB</li>
-        <li>Slot Player: 25</li>
-        <li>OS: Linux / Windows</li>
-        <li>Garansi: 15 Hari</li>
-      </ul>
-      <div class="price">Rp 5.000</div>
-      <a href="https://wa.me/6285797123671?text=Halo%2C+saya+mau+pesan+Hosting+SAMP+Paket+SD" class="btn" target="_blank">Beli Sekarang</a>
-    </div>
-
-    <!-- Paket 2 -->
-    <div class="card">
-      <h2>Hosting SMP Paket Premium</h2>
-      <ul>
-        <li>CPU: 120%</li>
-        <li>RAM: 10 GB</li>
-        <li>Slot Player: 50</li>
-        <li>OS: Wine / Linux</li>
-        <li>Garansi: 15 Hari</li>
-      </ul>
-      <div class="price">Rp 10.000</div>
-      <a href="https://wa.me/6285797123671?text=Halo%2C+saya+mau+pesan+Hosting+SMP+Paket+Premium" class="btn" target="_blank">Beli Sekarang</a>
-    </div>
-  </div>
-
-  <footer>
-    © 2025 Jual Hosting Game - Semua Hak Dilindungi
-  </footer>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rassamp Store</title>
   <style>
     body {
@@ -249,6 +129,21 @@
     }
     .edit-btn {background: #007bff;}
     .delete-btn {background: #dc3545;}
+
+    /* Tombol kontrol musik */
+    #musicControl {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      padding: 10px 15px;
+      background: rgba(0,0,0,0.7);
+      border: 2px solid #fff;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #fff;
+      font-size: 14px;
+      z-index: 10000;
+    }
   </style>
 </head>
 <body>
@@ -309,8 +204,11 @@
 
   <!-- Lagu background -->
   <audio id="bgMusic" autoplay loop>
-    <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <source src="http://f.top4top.io/m_3539ttefq1.mp3" type="audio/mpeg">
   </audio>
+
+  <!-- Tombol Play/Pause Musik -->
+  <button id="musicControl">⏸ Pause Musik</button>
 
   <script>
     function beliProduk(nama) {
@@ -361,6 +259,75 @@
     function changeBackgroundColor(color) {
       document.body.style.background = color;
     }
+
+    // Play / Pause Musik
+    const bgMusic = document.getElementById("bgMusic");
+    const musicBtn = document.getElementById("musicControl");
+
+    musicBtn.addEventListener("click", () => {
+      if (bgMusic.paused) {
+        bgMusic.play();
+        musicBtn.textContent = "⏸ Pause Musik";
+      } else {
+        bgMusic.pause();
+        musicBtn.textContent = "▶️ Play Musik";
+      }
+    });
   </script>
 </body>
 </html>
+<!-- ULASAN -->
+<div class="review-section">
+  <h2>💬 Ulasan Pembeli</h2>
+  <form onsubmit="addReview(event)">
+    <label>Nama: <input type="text" id="reviewName" required></label><br><br>
+    <label>Komentar: <input type="text" id="reviewText" required></label><br><br>
+    <label>Rating:
+      <select id="reviewRating" required>
+        <option value="5">⭐⭐⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
+      </select>
+    </label><br><br>
+    <button type="submit">Kirim Ulasan</button>
+  </form>
+  <div id="reviews"></div>
+</div>
+
+<script>
+  function addReview(e) {
+    e.preventDefault();
+    let name = document.getElementById("reviewName").value;
+    let text = document.getElementById("reviewText").value;
+    let rating = document.getElementById("reviewRating").value;
+
+    let div = document.createElement("div");
+    div.className = "review";
+    div.innerHTML = `<strong>${name}</strong> <span class="stars">${"⭐".repeat(rating)}</span><br>${text}`;
+
+    document.getElementById("reviews").appendChild(div);
+
+    // reset form
+    document.getElementById("reviewName").value = "";
+    document.getElementById("reviewText").value = "";
+    document.getElementById("reviewRating").value = "5";
+  }
+</script>
+
+<style>
+  .review-section {
+    background: rgba(0,0,0,0.7);
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+  }
+  .review {
+    border-bottom: 1px solid #555;
+    padding: 10px 0;
+  }
+  .stars {
+    color: gold;
+  }
+</style>
