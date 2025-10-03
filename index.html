@@ -274,7 +274,10 @@
       }
     });
   </script>
-<!-- ULASAN -->
+<!-- Tambah Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
+
 <div class="review-section">
   <h2>💬 Ulasan Pembeli</h2>
   <form onsubmit="addReview(event)">
@@ -294,33 +297,46 @@
   <div id="reviews"></div>
 </div>
 
-<script>
-  // Load review dari localStorage saat halaman dibuka
-  window.onload = function() {
-    let savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
-    savedReviews.forEach(r => renderReview(r.name, r.text, r.rating));
-  }
+<script type="module">
+  // 🔹 Konfigurasi Firebase (isi dengan data project kamu)
+  const firebaseConfig = {
+    apiKey: "API_KEY_KAMU",
+    authDomain: "NAMA_PROJECT.firebaseapp.com",
+    databaseURL: "https://NAMA_PROJECT.firebaseio.com",
+    projectId: "NAMA_PROJECT",
+    storageBucket: "NAMA_PROJECT.appspot.com",
+    messagingSenderId: "ID_PENGIRIM",
+    appId: "APP_ID"
+  };
 
+  // 🔹 Inisialisasi Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  // Tambah ulasan
   function addReview(e) {
     e.preventDefault();
     let name = document.getElementById("reviewName").value;
     let text = document.getElementById("reviewText").value;
     let rating = document.getElementById("reviewRating").value;
 
-    let review = { name, text, rating };
+    // simpan ke database Firebase
+    firebase.database().ref("reviews").push({
+      name: name,
+      text: text,
+      rating: rating
+    });
 
-    // simpan ke localStorage
-    let savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
-    savedReviews.push(review);
-    localStorage.setItem("reviews", JSON.stringify(savedReviews));
-
-    renderReview(name, text, rating);
-
-    // reset form
     document.getElementById("reviewName").value = "";
     document.getElementById("reviewText").value = "";
     document.getElementById("reviewRating").value = "5";
   }
+
+  // Ambil ulasan dari database
+  firebase.database().ref("reviews").on("child_added", function(snapshot) {
+    let review = snapshot.val();
+    renderReview(review.name, review.text, review.rating);
+  });
 
   function renderReview(name, text, rating) {
     let div = document.createElement("div");
