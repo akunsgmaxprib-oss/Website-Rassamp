@@ -274,31 +274,25 @@
       }
     });
   </script>
-<!-- Tambah Firebase SDK -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-database.js"></script>
 
-<div class="review-section">
-  <h2>💬 Ulasan Pembeli</h2>
-  <form onsubmit="addReview(event)">
-    <label>Nama: <input type="text" id="reviewName" required></label><br><br>
-    <label>Komentar: <input type="text" id="reviewText" required></label><br><br>
-    <label>Rating:
-      <select id="reviewRating" required>
-        <option value="5">⭐⭐⭐⭐⭐</option>
-        <option value="4">⭐⭐⭐⭐</option>
-        <option value="3">⭐⭐⭐</option>
-        <option value="2">⭐⭐</option>
-        <option value="1">⭐</option>
-      </select>
-    </label><br><br>
-    <button type="submit">Kirim Ulasan</button>
-  </form>
-  <div id="reviews"></div>
+<div class="rating-section">
+  <h2>⭐ Beri Rating</h2>
+  <div id="starContainer">
+    <span onclick="setRating(1)">⭐</span>
+    <span onclick="setRating(2)">⭐</span>
+    <span onclick="setRating(3)">⭐</span>
+    <span onclick="setRating(4)">⭐</span>
+    <span onclick="setRating(5)">⭐</span>
+  </div>
+  <p id="thanksMsg" style="display:none; color:lightgreen;">✅ Terima kasih atas ratingnya!</p>
+  <h3>📊 Rata-rata Rating: <span id="avgRating">0</span>/5</h3>
 </div>
 
 <script type="module">
-  // 🔹 Konfigurasi Firebase (isi dengan data project kamu)
+  // 🔹 Konfigurasi Firebase (isi sesuai project kamu)
   const firebaseConfig = {
     apiKey: "API_KEY_KAMU",
     authDomain: "NAMA_PROJECT.firebaseapp.com",
@@ -309,55 +303,43 @@
     appId: "APP_ID"
   };
 
-  // 🔹 Inisialisasi Firebase
   const app = firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  // Tambah ulasan
-  function addReview(e) {
-    e.preventDefault();
-    let name = document.getElementById("reviewName").value;
-    let text = document.getElementById("reviewText").value;
-    let rating = document.getElementById("reviewRating").value;
-
-    // simpan ke database Firebase
-    firebase.database().ref("reviews").push({
-      name: name,
-      text: text,
-      rating: rating
-    });
-
-    document.getElementById("reviewName").value = "";
-    document.getElementById("reviewText").value = "";
-    document.getElementById("reviewRating").value = "5";
+  // Simpan rating
+  function setRating(star) {
+    firebase.database().ref("ratings").push(star);
+    document.getElementById("thanksMsg").style.display = "block";
   }
 
-  // Ambil ulasan dari database
-  firebase.database().ref("reviews").on("child_added", function(snapshot) {
-    let review = snapshot.val();
-    renderReview(review.name, review.text, review.rating);
+  // Hitung rata-rata rating
+  firebase.database().ref("ratings").on("value", function(snapshot) {
+    let ratings = snapshot.val();
+    if (!ratings) return;
+    let total = 0, count = 0;
+    for (let key in ratings) {
+      total += parseInt(ratings[key]);
+      count++;
+    }
+    let avg = (total / count).toFixed(1);
+    document.getElementById("avgRating").innerText = avg;
   });
-
-  function renderReview(name, text, rating) {
-    let div = document.createElement("div");
-    div.className = "review";
-    div.innerHTML = `<strong>${name}</strong> <span class="stars">${"⭐".repeat(rating)}</span><br>${text}`;
-    document.getElementById("reviews").appendChild(div);
-  }
 </script>
 
 <style>
-  .review-section {
+  .rating-section {
     background: rgba(0,0,0,0.7);
     padding: 20px;
     margin: 20px;
     border-radius: 10px;
+    text-align: center;
   }
-  .review {
-    border-bottom: 1px solid #555;
-    padding: 10px 0;
+  #starContainer span {
+    font-size: 40px;
+    cursor: pointer;
+    transition: transform 0.2s;
   }
-  .stars {
-    color: gold;
+  #starContainer span:hover {
+    transform: scale(1.3);
   }
 </style>
