@@ -274,8 +274,6 @@
       }
     });
   </script>
-</body>
-</html>
 <!-- ULASAN -->
 <div class="review-section">
   <h2>💬 Ulasan Pembeli</h2>
@@ -297,22 +295,38 @@
 </div>
 
 <script>
+  // Load review dari localStorage saat halaman dibuka
+  window.onload = function() {
+    let savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    savedReviews.forEach(r => renderReview(r.name, r.text, r.rating));
+  }
+
   function addReview(e) {
     e.preventDefault();
     let name = document.getElementById("reviewName").value;
     let text = document.getElementById("reviewText").value;
     let rating = document.getElementById("reviewRating").value;
 
-    let div = document.createElement("div");
-    div.className = "review";
-    div.innerHTML = `<strong>${name}</strong> <span class="stars">${"⭐".repeat(rating)}</span><br>${text}`;
+    let review = { name, text, rating };
 
-    document.getElementById("reviews").appendChild(div);
+    // simpan ke localStorage
+    let savedReviews = JSON.parse(localStorage.getItem("reviews")) || [];
+    savedReviews.push(review);
+    localStorage.setItem("reviews", JSON.stringify(savedReviews));
+
+    renderReview(name, text, rating);
 
     // reset form
     document.getElementById("reviewName").value = "";
     document.getElementById("reviewText").value = "";
     document.getElementById("reviewRating").value = "5";
+  }
+
+  function renderReview(name, text, rating) {
+    let div = document.createElement("div");
+    div.className = "review";
+    div.innerHTML = `<strong>${name}</strong> <span class="stars">${"⭐".repeat(rating)}</span><br>${text}`;
+    document.getElementById("reviews").appendChild(div);
   }
 </script>
 
