@@ -343,3 +343,34 @@
     transform: scale(1.3);
   }
 </style>
+<div class="counter">
+  👀 Total Pengunjung: <span id="visitorCount">0</span>
+</div>
+
+<script>
+  // Simpan jumlah visitor di Firebase
+  let visitorRef = firebase.database().ref("visitors");
+  
+  visitorRef.transaction(function(current) {
+    return (current || 0) + 1;
+  });
+
+  // Update real-time
+  visitorRef.on("value", function(snapshot) {
+    document.getElementById("visitorCount").innerText = snapshot.val();
+  });
+</script>
+
+<style>
+  .counter {
+    background: rgba(255,255,255,0.1);
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 10px auto;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    color: gold;
+    width: fit-content;
+  }
+</style>
