@@ -1,42 +1,407 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SAMP Butget Hosting — Paket & Harga</title>
-  <meta name="description" content="SAMP Butget Hosting — Cepat, Stabil, Full Support. Paket LOW, MEDIUM, HIGH, ULTRA. Kontak WA untuk order." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#0b1020; --card:#0f1724; --accent:#00c2a8; --muted:#9fb0c8; --glass:rgba(255,255,255,0.04);
-    }
-    *{box-sizing:border-box}
-    body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:linear-gradient(270deg,#0f2027,#203a43,#2c5364);background-size:600% 600%;animation:bgShift 16s ease infinite;color:#e6eef6;line-height:1.45}
-    @keyframes bgShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-    .wrap{max-width:1100px;margin:36px auto;padding:24px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-    .brand{display:flex;align-items:center;gap:14px}
-    .logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#6ee7b7);display:flex;align-items:center;justify-content:center;font-weight:800;color:#042b23;box-shadow:0 0 18px #00c2a8cc}
-    h1{font-size:20px;margin:0}
-    p.lead{color:var(--muted);margin:6px 0 0}
-    .hero{display:flex;flex-wrap:wrap;gap:20px;margin-top:18px}
-    .card{background:var(--card);padding:18px;border-radius:12px;box-shadow:0 0 20px rgba(0,194,168,0.2),0 0 40px rgba(0,194,168,0.1);transition:0.3s}
-    .card:hover{box-shadow:0 0 35px rgba(0,194,168,0.4),0 0 60px rgba(0,194,168,0.2)}
-    .pack-list{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:18px}
-    .pack{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:14px;border-radius:10px}
-    .pack h3{margin:0 0 6px}
-    .price{font-weight:800;font-size:18px;margin-bottom:8px;color:var(--accent)}
-    ul.features{margin:8px 0 0;padding:0;list-style:none}
-    ul.features li{padding:6px 0;border-bottom:1px dashed rgba(255,255,255,0.03);color:var(--muted);font-size:14px}
-    .btn{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--accent);color:#042b23;font-weight:700;text-decoration:none}
-    .muted{color:var(--muted);font-size:13px}
-    .upgrades{display:flex;flex-wrap:wrap;gap:10px}
-    .chip{padding:8px 10px;background:var(--glass);border-radius:999px;font-weight:600;color:var(--muted)}
-    @media (max-width:900px){.pack-list{grid-template-columns:1fr}}
-    audio{display:none}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Farras — White Celestial</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&display=swap" rel="stylesheet">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Orbitron',sans-serif}
+html{scroll-behavior:smooth}
+body{color:#fff;overflow-x:hidden;background:#000}
+
+/* ================= BACKGROUND VIDEO ================= */
+#bgLoading,#bgPayment{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    z-index:-5;
+}
+#bgPayment{display:none}
+
+/* OVERLAY */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:-4;
+}
+
+/* ================= CAHAYA PUTIH BANYAK ================= */
+#lights{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-3;
+}
+.light{
+    position:absolute;
+    width:380px;
+    height:380px;
+    border-radius:50%;
+    background:rgba(255,255,255,.28);
+    filter:blur(70px);
+    animation:lightMove 24s linear infinite;
+}
+@keyframes lightMove{
+    0%{transform:translate(0,0)}
+    50%{transform:translate(240px,-200px)}
+    100%{transform:translate(0,0)}
+}
+
+/* ================= PARTIKEL PUTIH ================= */
+#particles{position:fixed;inset:0;pointer-events:none;z-index:-2}
+.p{
+    position:absolute;
+    width:3px;height:3px;
+    background:white;
+    border-radius:50%;
+    box-shadow:0 0 18px white;
+    animation:float linear infinite;
+}
+@keyframes float{
+    from{transform:translateY(110vh);opacity:0}
+    to{transform:translateY(-10vh);opacity:1}
+}
+
+/* ================= LOADING ================= */
+#loading{
+    position:fixed;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    z-index:10;
+}
+.welcome{
+    font-size:22px;
+    text-align:center;
+    background:linear-gradient(90deg,#ffffff,#dcdcdc,#ffffff);
+    background-size:300%;
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    animation:shine 3s linear infinite;
+    text-shadow:0 0 40px white;
+}
+@keyframes shine{to{background-position:300%}}
+
+.loader-box{
+    width:80%;max-width:420px;height:16px;
+    background:rgba(255,255,255,.12);
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 0 40px rgba(255,255,255,.6);
+    margin-top:30px;
+}
+.loader-bar{
+    height:100%;
+    width:0;
+    background:linear-gradient(90deg,#fff,#eaeaea,#fff);
+}
+.loading-text{margin-top:18px;color:#eee}
+
+/* ================= PAYMENT ================= */
+#payment{
+    display:none;
+    padding:30px 20px 0;
+    text-align:center;
+    position:relative;
+    z-index:2;
+}
+h1{
+    background:linear-gradient(90deg,#fff,#dcdcdc,#fff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    text-shadow:0 0 40px white;
+}
+
+/* VIDEO */
+.video-box{
+    max-width:440px;
+    margin:20px auto 30px;
+    aspect-ratio:16/9;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 0 70px rgba(255,255,255,.7);
+}
+video{width:100%;height:100%;object-fit:cover}
+
+/* ================= BUTTON PUTIH ================= */
+.payments{
+    display:grid;
+    gap:16px;
+    max-width:440px;
+    margin:auto;
+}
+.btn,.send-btn{
+    padding:20px;
+    border-radius:20px;
+    font-size:18px;
+    color:#fff;
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.4);
+    backdrop-filter:blur(12px);
+    box-shadow:
+      inset 0 0 25px rgba(255,255,255,.15),
+      0 0 35px rgba(255,255,255,.35);
+    transition:.25s ease;
+    cursor:pointer;
+    text-decoration:none;
+}
+.btn:hover,.send-btn:hover{
+    transform:translateY(-4px);
+    box-shadow:
+      inset 0 0 35px rgba(255,255,255,.25),
+      0 0 65px rgba(255,255,255,.75);
+}
+.btn:active,.send-btn:active{
+    background:white;
+    color:#000;
+    box-shadow:0 0 120px white,inset 0 0 40px rgba(255,255,255,.9);
+}
+
+/* ================= DESKRIPSI ================= */
+.section{
+    margin:130px auto 0;
+    max-width:720px;
+    padding:40px;
+    border-radius:28px;
+    background:rgba(255,255,255,.07);
+    border:1px solid rgba(255,255,255,.25);
+    box-shadow:0 0 60px rgba(255,255,255,.35);
+}
+.section h2{
+    margin-bottom:22px;
+    font-size:22px;
+    background:linear-gradient(90deg,#ffffff,#dcdcdc,#ffffff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+.section p{
+    font-size:14px;
+    line-height:2.2;
+    background:linear-gradient(90deg,#ffffff,#dcdcdc,#ffffff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    margin-bottom:18px;
+}
+
+/* FOOTER */
+.footer{
+    margin-top:180px;
+    padding-bottom:50px;
+    text-align:center;
+    font-size:12px;
+    color:#eaeaea;
+}
+
+/* ================= MODAL ================= */
+.payModal,#qrModal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.9);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    opacity:0;
+    pointer-events:none;
+    transition:.3s;
+    z-index:99;
+}
+.payModal.active,#qrModal.active{opacity:1;pointer-events:auto}
+.payModal .box{
+    background:rgba(255,255,255,.08);
+    padding:34px;
+    border-radius:26px;
+    text-align:center;
+    box-shadow:0 0 80px white;
+}
+.payModal .number{
+    font-size:20px;
+    margin:14px 0;
+    background:linear-gradient(90deg,#fff,#dcdcdc,#fff);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* QR */
+#qrModal img{
+    max-width:90%;
+    border-radius:26px;
+    cursor:zoom-in;
+    transition:.3s;
+}
+#qrModal img.zoom{transform:scale(2)}
+#qrModal .close{
+    position:absolute;
+    top:20px;right:25px;
+    font-size:30px;
+    cursor:pointer;
+}
+</style>
 </head>
+
 <body>
+
+<!-- BACKGROUND -->
+<video id="bgLoading" autoplay muted loop playsinline>
+<source src="https://files.catbox.moe/ziif9v.mp4">
+</video>
+<video id="bgPayment" autoplay muted loop playsinline>
+<source src="https://files.catbox.moe/k47mdc.mp4">
+</video>
+
+<!-- CAHAYA -->
+<div id="lights">
+  <div class="light" style="top:5%;left:10%"></div>
+  <div class="light" style="top:60%;left:70%"></div>
+  <div class="light" style="top:35%;left:45%"></div>
+  <div class="light" style="top:75%;left:15%"></div>
+  <div class="light" style="top:20%;left:80%"></div>
+</div>
+
+<div id="particles"></div>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="welcome">SELAMAT DATANG DI PAYMENT Farras</div>
+  <div class="loader-box"><div class="loader-bar" id="bar"></div></div>
+  <div class="loading-text" id="percent">LOADING 0%</div>
+</div>
+
+<!-- PAYMENT -->
+<div id="payment">
+<h1>SELECT PAYMENT</h1>
+
+<div class="video-box">
+<video src="https://files.catbox.moe/yox4ep.mp4" autoplay muted loop playsinline></video>
+</div>
+
+<div class="payments">
+<button class="btn" onclick="openDana()">DANA</button>
+<button class="btn" onclick="openGopay()">GOPAY</button>
+<button class="btn" onclick="openQR()">QRIS</button>
+
+<a class="send-btn" href="https://wa.me/message/6285797123671" target="_blank">KIRIM BUKTI WHATSAPP</a>
+<a class="send-btn" href="https://t.me/abangabangansad" target="_blank">KIRIM BUKTI TELEGRAM</a>
+</div>
+
+<div class="section">
+<h2>FarrasVAC — BUSINESS DIGITAL</h2>
+<p>Farrasvac merupakan identitas bisnis digital yang bergerak di bidang pengembangan sistem berbasis JavaScript, automation script, panel APK, serta eksperimen teknologi tingkat lanjut. Seluruh sistem dirancang dengan filosofi performa tinggi, stabilitas maksimal, serta respons instan tanpa delay.</p>
+<p>Setiap project Farrasvac dibangun menggunakan pendekatan modular, aman, dan scalable, sehingga mampu beradaptasi terhadap berbagai kebutuhan pengembangan, riset sistem, dan eksplorasi teknis lanjutan.</p>
+</div>
+
+<div class="section">
+<h2>PROJECT APK BUG VX</h2>
+<p>apk bug adalah apk untuk mengebug nomor wa yang sudha di targetkan semua bug pasti ada minusnya kami mengembangkan apk dan menambahkan tools bukan menu bug saja kami menambahkan fitur spam tele ddos webside.</p>
+<p>Setiap komponen Traxa Invictus diuji secara menyeluruh untuk memastikan kestabilan, efektivitas, dan performa maksimal.</p>
+</div>
+
+<div class="section">
+<h2>Farras JAVASCRIPT</h2>
+<p>Farras JavaScript adalah pengembang yang berfokus pada JavaScript modern, frontend futuristik, animasi interaktif, serta sistem web performa tinggi. Pengembangan dilakukan dengan standar kualitas tinggi dan pengalaman pengguna sebagai prioritas utama.</p>
+</div>
+
+<div class="footer">
+Website Created by <b>Xaviera D. Farras</b>
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="payModal" id="danaModal">
+<div class="box">
+<h3>DANA</h3>
+<div class="number">0882008676433</div>
+<button class="btn" onclick="closeDana()">TUTUP</button>
+</div>
+</div>
+
+<div class="payModal" id="gopayModal">
+<div class="box">
+<h3>GOPAY</h3>
+<div class="number">085797123671</div>
+<button class="btn" onclick="closeGopay()">TUTUP</button>
+</div>
+</div>
+
+<div id="qrModal">
+<span class="close" onclick="closeQR()">✕</span>
+<img src="https://files.catbox.moe/67kkg4.jpg" id="qrImage">
+</div>
+
+<script>
+/* LOADING */
+let p=0;
+const bar=document.getElementById("bar");
+const percent=document.getElementById("percent");
+const bgLoading=document.getElementById("bgLoading");
+const bgPayment=document.getElementById("bgPayment");
+
+const load=setInterval(()=>{
+p++;
+bar.style.width=p+"%";
+percent.textContent="LOADING "+p+"%";
+if(p>=100){
+clearInterval(load);
+loading.style.display="none";
+payment.style.display="block";
+bgLoading.style.display="none";
+bgPayment.style.display="block";
+}
+},120);
+
+/* PARTICLES */
+const pt=document.getElementById("particles");
+for(let i=0;i<180;i++){
+let d=document.createElement("div");
+d.className="p";
+d.style.left=Math.random()*100+"%";
+d.style.animationDuration=(8+Math.random()*120)+"s";
+pt.appendChild(d);
+}
+
+/* COPY + NOTIF ATAS */
+function copyText(text){
+navigator.clipboard.writeText(text).then(()=>showToast("✔ Nomor berhasil disalin"));
+}
+function showToast(msg){
+let t=document.createElement("div");
+t.textContent=msg;
+t.style.position="fixed";
+t.style.top="25px";
+t.style.left="50%";
+t.style.transform="translateX(-50%)";
+t.style.background="rgba(255,255,255,.95)";
+t.style.color="#000";
+t.style.padding="14px 24px";
+t.style.borderRadius="14px";
+t.style.zIndex="9999";
+document.body.appendChild(t);
+setTimeout(()=>t.remove(),1800);
+}
+
+/* MODAL */
+const danaModal=document.getElementById("danaModal");
+const gopayModal=document.getElementById("gopayModal");
+const qrModal=document.getElementById("qrModal");
+const qrImage=document.getElementById("qrImage");
+
+function openDana(){copyText("08938XXXX");danaModal.classList.add("active")}
+function closeDana(){danaModal.classList.remove("active")}
+function openGopay(){copyText("0898373XXXX");gopayModal.classList.add("active")}
+function closeGopay(){gopayModal.classList.remove("active")}
+function openQR(){qrModal.classList.add("active")}
+function closeQR(){qrModal.classList.remove("active");qrImage.classList.remove("zoom")}
+qrImage.onclick=()=>qrImage.classList.toggle("zoom");
+qrModal.onclick=e=>{if(e.target===qrModal)closeQR()}
+</script>
+
+</body>
+</html>
